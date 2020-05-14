@@ -4,6 +4,10 @@ from datetime import datetime as dt
 from datetime import timedelta
 
 
+
+PY_NORM_FDATE = "%Y-%m-%d"
+SPARK_NORM_FDATE = "dd-MM-yyyy"
+
 def get_this_sunday(cur_date):
     """
     Return the date of Sunday in the week of input date
