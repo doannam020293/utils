@@ -6,9 +6,11 @@ from pyspark.sql import functions as F
 from pyspark.sql.session import SparkSession
 import os
 
-from etl.common.hdfs import check_dir_exist,get_size,rename_file, delete_file
+from cic_util.hdfs import check_dir_exist,get_size,rename_file, delete_file
+
 
 spark = SparkSession.builder.getOrCreate()
+
 
 def _back_fill_data(in_dir, out_dir, start_date, end_date, min_size, backfill_type="last"):
     day_count = (end_date - start_date).days

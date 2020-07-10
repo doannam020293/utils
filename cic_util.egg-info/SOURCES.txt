@@ -12,9 +12,13 @@ cic_util.egg-info/requires.txt
 cic_util.egg-info/top_level.txt
 cic_util/data/__init__.py
 cic_util/data/backfill.py
+cic_util/data/metrics.py
+cic_util/hdfs/__init__.py
+cic_util/hdfs/hdfs.py
 cic_util/pandas/__init__.py
 cic_util/pandas/conversion.py
 cic_util/spark/__init__.py
+cic_util/spark/init_spark.py
 cic_util/spark/spark_util.py
 cic_util/spark/submit_job.py
 cic_util/spark/udf.py

@@ -13,50 +13,13 @@ import seaborn as sns
 from etl.viettel.common.hdfs import check_dir_exist, get_size
 import matplotlib.pyplot as plt
 from matplotlib.pylab import rcParams
+
+from cic_util.hdfs import start_date_path, end_date_path
+
 rcParams['figure.figsize'] = 20, 8
 
 
 spark = SparkSession.builder.getOrCreate()
-
-def plot_daily_count(path, start_date=None, end_date=None):
-    """
-    plot data by daily
-    :param path:
-    :param start_date: instance of datetime.date
-    :param end_date: instance of datetime.date
-    :return: pd.Dataframe: daily count
-    """
-    if start_date != None:
-        lower_condition = "date >= '{}'".format(dt.strftime(start_date, "%Y-%m-%d"))
-    else:
-        lower_condition = "1 =1"
-    if end_date != None:
-        upper_condition = "date <= '{}'".format(dt.strftime(end_date, "%Y-%m-%d"))
-    else:
-        upper_condition = "1=1"
-
-    df = spark.read.parquet(path) \
-            .where(lower_condition) \
-            .where(upper_condition)
-
-    df_group = df.groupBy("date").agg(F.count("*").alias("count1"))
-    if start_date == None:
-        start_date = df.agg(min("date").alias("date")).collect()[0].date
-    if end_date == None:
-        end_date = df.agg(max("date").alias("date")).collect()[0].date
-
-    date_range = spark.createDataFrame(pd.DataFrame(pd.date_range(start_date, end_date), columns=["date", ])) \
-        .withColumn("date", F.to_date("date"))
-
-    dp = date_range.join(df_group, "date", "outer") \
-        .orderBy("date") \
-        .fillna(0) \
-        .toPandas()
-    dp.plot(x="date", y="count1", kind="line", figsize=(20, 10))
-    plt.show()
-    return dp
-
-
 
 
 def plot_daily_box_plot(dp, col_name_list=None, date_col_name="date", showfliers=False):
@@ -85,10 +48,60 @@ def plot_daily_avg(df, col_name_list=None, date_col_name="date"):
         plt.show()
 
 
-def plot_daily_size(path):
+def plot_daily_count(path, start_date=None, end_date=None):
+    """
+    plot data by daily
+    :param path:
+    :param start_date: instance of datetime.date
+    :param end_date: instance of datetime.date
+    :return: pd.Dataframe: daily count
+    """
+    if start_date != None:
+        lower_condition = "date >= '{}'".format(dt.strftime(start_date, "%Y-%m-%d"))
+        start_date = start_date_path(path)
+    else:
+        lower_condition = "1 =1"
+    if end_date != None:
+        upper_condition = "date <= '{}'".format(dt.strftime(end_date, "%Y-%m-%d"))
+        end_date = end_date_path(path)
+    else:
+        upper_condition = "1=1"
+
+    df = spark.read.parquet(path) \
+            .where(lower_condition) \
+            .where(upper_condition)
+
+    df_group = df.groupBy("date").agg(F.count("*").alias("count1"))
+
+
+    date_range = spark.createDataFrame(pd.DataFrame(pd.date_range(start_date, end_date), columns=["date", ])) \
+        .withColumn("date", F.to_date("date"))
+
+    dp = date_range.join(df_group, "date", "outer") \
+        .orderBy("date") \
+        .fillna(0) \
+        .toPandas()
+    dp.plot(x="date", y="count1", kind="line", figsize=(20, 10))
+    plt.show()
+    return dp
+
+def plot_daily_size(path, start_date=None, end_date=None):
+    if start_date != None:
+        lower_condition = "date >= '{}'".format(dt.strftime(start_date, "%Y-%m-%d"))
+        start_date = start_date_path(path)
+    else:
+        lower_condition = "1 =1"
+    if end_date != None:
+        upper_condition = "date <= '{}'".format(dt.strftime(end_date, "%Y-%m-%d"))
+        end_date = end_date_path(path)
+    else:
+        upper_condition = "1=1"
     size_all = get_size(path)
     dp = pd.DataFrame(list(size_all.iteritems()), columns=["date", "size"])
     dp['date'] = pd.to_datetime(dp["date"])
+    date_range = pd.DataFrame(pd.date_range(start_date, end_date), columns=["date", ])
+    dp = date_range.merge(dp, on="date", how= "outer")
     dp = dp.sort_values("date")
     dp.plot(x="date", figsize=(20, 8))
     plt.show()
+    return dp

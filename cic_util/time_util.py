@@ -3,10 +3,22 @@ from __future__ import print_function
 from datetime import datetime as dt
 from datetime import timedelta, date
 from pyspark.sql import functions as F
+from dateutil.relativedelta import relativedelta
+
+
 
 
 PY_NORM_FDATE = "%Y-%m-%d"
 SPARK_NORM_FDATE = "yyyy-MM-dd"
+
+
+def get_end_date_month(date):
+    """
+
+    :param date: instance of date
+    :return:
+    """
+    return date + relativedelta(day=31)
 
 def get_this_sunday(cur_date):
     """
@@ -43,7 +55,7 @@ def date_range(start_date, end_date, duration=1, return_type="date"):
         print("need start_date, and end_date datetime.date instance")
         return
     day_count = (end_date - start_date).days
-    result = [curdate for curdate in (start_date + timedelta(n) for n in range(0, day_count, 1))]
+    result = [start_date + timedelta(n) for n in range(0, day_count, duration)]
     if return_type == "str":
         result = [dt.strftime(a, PY_NORM_FDATE) for a in result]
     return result

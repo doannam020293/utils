@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="cic_util",
-    version="0.0.4",
+    version="1.0.0",
     author="CICData",
     author_email="data@cicdata.vn",
     description="An util package",
