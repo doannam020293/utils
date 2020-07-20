@@ -10,11 +10,9 @@ import pandas as pd
 import seaborn as sns
 
 
-from etl.viettel.common.hdfs import check_dir_exist, get_size
+from cic_util.hdfs import check_dir_exist, get_size, start_date_path, end_date_path
 import matplotlib.pyplot as plt
 from matplotlib.pylab import rcParams
-
-from cic_util.hdfs import start_date_path, end_date_path
 
 rcParams['figure.figsize'] = 20, 8
 

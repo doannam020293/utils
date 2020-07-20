@@ -31,7 +31,7 @@ def get_dirs(dir_in):
     args = "hdfs dfs -ls "+ dir_in + "| awk '{print $8}'"
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     s_output, _ = proc.communicate()
-    all_dart_dirs = s_output.split()
+    all_dart_dirs = [a.decode("utf-8") for a in s_output.split()]
     return all_dart_dirs
 
 def check_dir_exist(dir_path):
@@ -79,7 +79,7 @@ def get_size(path):
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     s_output, s_err = proc.communicate()
     stats = dict()
-    for line in s_output.split('\n'):
+    for line in s_output.decode('utf-8').split('\n'):
         if "date" not in line:
             continue
         date = line.split("=")[-1]
