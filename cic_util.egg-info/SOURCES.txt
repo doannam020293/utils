@@ -15,6 +15,8 @@ cic_util/data/backfill.py
 cic_util/data/metrics.py
 cic_util/hdfs/__init__.py
 cic_util/hdfs/hdfs.py
+cic_util/model/__init__.py
+cic_util/model/train.py
 cic_util/pandas/__init__.py
 cic_util/pandas/conversion.py
 cic_util/spark/__init__.py

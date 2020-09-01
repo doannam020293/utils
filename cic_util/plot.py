@@ -13,7 +13,6 @@ import seaborn as sns
 from cic_util.hdfs import check_dir_exist, get_size, start_date_path, end_date_path
 import matplotlib.pyplot as plt
 from matplotlib.pylab import rcParams
-
 rcParams['figure.figsize'] = 20, 8
 
 
@@ -84,22 +83,16 @@ def plot_daily_count(path, start_date=None, end_date=None):
     return dp
 
 def plot_daily_size(path, start_date=None, end_date=None):
-    if start_date != None:
-        lower_condition = "date >= '{}'".format(dt.strftime(start_date, "%Y-%m-%d"))
+    if start_date == None:
         start_date = start_date_path(path)
-    else:
-        lower_condition = "1 =1"
-    if end_date != None:
-        upper_condition = "date <= '{}'".format(dt.strftime(end_date, "%Y-%m-%d"))
+    if end_date == None:
         end_date = end_date_path(path)
-    else:
-        upper_condition = "1=1"
     size_all = get_size(path)
-    dp = pd.DataFrame(list(size_all.iteritems()), columns=["date", "size"])
+    dp = pd.DataFrame(list(size_all.items()), columns=["date", "size"])
     dp['date'] = pd.to_datetime(dp["date"])
     date_range = pd.DataFrame(pd.date_range(start_date, end_date), columns=["date", ])
-    dp = date_range.merge(dp, on="date", how= "outer")
+    dp = date_range.merge(dp, on="date", how= "outer").fillna(0)
     dp = dp.sort_values("date")
-    dp.plot(x="date", figsize=(20, 8))
+    dp.plot(x="date", y="size", figsize=(20, 8), kind="line")
     plt.show()
     return dp
