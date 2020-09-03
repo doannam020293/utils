@@ -32,7 +32,7 @@ def get_this_sunday(cur_date):
     """
     cur_date = dt.strptime(cur_date, "%Y-%m-%d") if type(cur_date) is str else cur_date
     return cur_date - timedelta(cur_date.weekday() - 6)
-
+from pyspark.sql import functions as F
 def udf_get_sunday(date):
     return F.date_sub(F.next_day(date, "sunday"), 7)
 
