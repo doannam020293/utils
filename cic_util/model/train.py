@@ -19,7 +19,9 @@ def train(all_train_data, ft_names=None, skip_col=None,label_col = "label", cros
 
     X = all_train_data[ft_names].values
     Y = all_train_data[label_col]
-    print("number label 1 ", np.sum(all_train_data[label_col]))
+    n_label_1 = np.sum(all_train_data[label_col])
+    print("shape", all_train_data.shape)
+    print("number label 1 ", n_label_1, "bad rate", np.round(n_label_1/all_train_data.shape[0]*100.0, 2))
     seed = 7
     test_size = 0.3
     train_data, test_data, train_labels, test_labels = train_test_split(X, Y, test_size=0.3)
@@ -44,6 +46,8 @@ def train(all_train_data, ft_names=None, skip_col=None,label_col = "label", cros
     if cross_val:
         model = XGBClassifier(nthread=32)
         scores = cross_val_score(model, X, Y, cv=5, scoring="roc_auc")
+        print("auc cross validate",scores)
+        print("mean auc", np.mean(scores), "diff", np.max(scores) - np.max(scores), "std", np.std(scores) )
         print(scores, np.mean(scores))
     if print_corr:
         top_ft = df_cor["Feature"].tolist()[:50]
