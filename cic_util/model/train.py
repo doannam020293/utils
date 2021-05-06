@@ -8,18 +8,18 @@ from sklearn.model_selection import cross_val_score
 
 
 
-def train(all_train_data, ft_names=None, skip_col=None, cross_val=True, print_corr=True):
+def train(all_train_data, ft_names=None, skip_col=None,label_col = "label", cross_val=True, print_corr=True):
     object_col = all_train_data.select_dtypes(include=["object", ]).columns.tolist()
     if skip_col == None:
-        skip_col = ["phone_number", "local_id", "disburse_date", "date", "sex", "replied", "label", "month",
+        skip_col = ["phone_number", "local_id", "disburse_date", "date", "sex", "replied", "label_col", label_col, "label_value", "month",
                     "is_from_ts", "source", "send_time"] \
                    + object_col
     if ft_names == None:
         ft_names = [f for f in all_train_data.columns if f not in skip_col]
 
-    X = all_train_data[ft_names].as_matrix()
-    Y = all_train_data["label"]
-    print("number label 1 ", np.sum(all_train_data["label"]))
+    X = all_train_data[ft_names].values
+    Y = all_train_data[label_col]
+    print("number label 1 ", np.sum(all_train_data[label_col]))
     seed = 7
     test_size = 0.3
     train_data, test_data, train_labels, test_labels = train_test_split(X, Y, test_size=0.3)
@@ -48,5 +48,5 @@ def train(all_train_data, ft_names=None, skip_col=None, cross_val=True, print_co
     if print_corr:
         top_ft = df_cor["Feature"].tolist()[:50]
         for col_name in top_ft:
-            print(col_name, all_train_data[col_name].corr(all_train_data["label"]))
+            print(col_name, all_train_data[col_name].corr(all_train_data[label_col]))
     return df_cor

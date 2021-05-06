@@ -1,0 +1,11 @@
+.vscode/
+*pyc
+.rsync.sh
+.coverage
+.idea
+.DS_Store
+dist/
+etl.egg-info/
+build/
+/env_viettel/
+**/*.ipynb_checkpoint
