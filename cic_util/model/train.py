@@ -47,7 +47,7 @@ def train(all_train_data, ft_names=None, skip_col=None,label_col = "label", cros
         model = XGBClassifier(nthread=32)
         scores = cross_val_score(model, X, Y, cv=5, scoring="roc_auc")
         print("auc cross validate",scores)
-        print("mean auc", np.mean(scores), "diff", np.max(scores) - np.max(scores), "std", np.std(scores) )
+        print("mean auc", np.mean(scores), "diff", np.max(scores) - np.min(scores), "std", np.std(scores) )
         print(scores, np.mean(scores))
     if print_corr:
         top_ft = df_cor["Feature"].tolist()[:50]
