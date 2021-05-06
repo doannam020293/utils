@@ -1,0 +1,12 @@
+Metadata-Version: 1.1
+Name: cic-util
+Version: 1.0.2
+Summary: An util package
+Home-page: https://github.com/cicdata-io/etl
+Author: CICData
+Author-email: data@cicdata.vn
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent

@@ -3,6 +3,8 @@ import sys
 from datetime import date, timedelta
 from datetime import datetime as dt
 import subprocess
+from cic_util.time_util import date_range
+
 
 if len(sys.argv) < 4:
     print('need processing date string: python {} start_date end_date format like YYYY-mm-dd and python_file'.format(sys.argv[0]))
@@ -20,8 +22,10 @@ print("*" * 40)
 start_date = dt.strptime(start_date_str, "%Y-%m-%d")
 end_date = dt.strptime(end_date_str, "%Y-%m-%d")
 day_count = (end_date - start_date).days
-for curdate in (start_date + timedelta(n) for n in range(day_count)):
-    curdate_str = dt.strftime(curdate, "%Y-%m-%d")
+list_date = date_range(start_date, end_date, return_type="str")
+
+
+for curdate_str in list_date:
     args = "/apps/anaconda2/bin/python {} {}".format(python_file, curdate_str)
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     s_output, s_err = proc.communicate()
