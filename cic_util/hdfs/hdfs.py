@@ -12,7 +12,7 @@ def start_date_path(path):
     """
     all_files = get_dirs(path)
     all_dates = [dt.strptime(f.split("=")[1], "%Y-%m-%d").date()
-                 for f in all_files if "__HIVE_DEFAULT_PARTITION__" not in f]
+                 for f in all_files if len(f.split("="))==2]
     return np.min(all_dates)
 
 
@@ -24,7 +24,7 @@ def end_date_path(path):
     """
     all_files = get_dirs(path)
     all_dates = [dt.strptime(f.split("=")[1], "%Y-%m-%d").date()
-                 for f in all_files if "__HIVE_DEFAULT_PARTITION__" not in f]
+                 for f in all_files if len(f.split("="))==2]
     return np.max(all_dates)
 
 def get_dirs(dir_in):
