@@ -19,15 +19,23 @@ rcParams['figure.figsize'] = 20, 8
 spark = SparkSession.builder.getOrCreate()
 
 
-def plot_daily_box_plot(dp, col_name_list=None, date_col_name="date", showfliers=False):
+def plot_daily_box_plot(dp, col_name_list=None, date_col_name="date", showfliers=False, hue = None):
+    """
+    show
+    :param dp:
+    :param col_name_list:
+    :param date_col_name:
+    :param showfliers:
+    :param hue: can be label, if want to sea diff between bad, good.
+    :return:
+    """
     if col_name_list is None:
         col_name_list = [a for a in dp.columns if a not in ("phone_number", date_col_name, "local_id")]
 
     dp = dp.sort_values(date_col_name)
-    showfliers = []
     for c in col_name_list:
         print( c)
-        ax0 = sns.boxplot(x=date_col_name, y=c, data=dp, showfliers=c in showfliers)
+        ax0 = sns.boxplot(x=date_col_name, y=c, data=dp, showfliers=showfliers, hue = hue)
         ax0.set_xticklabels(ax0.get_xticklabels(), rotation=45)
         ax0.set_title(c)
         plt.show()
