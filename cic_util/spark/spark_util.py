@@ -4,7 +4,9 @@ from datetime import datetime as dt
 
 from etl.common.utils import get_credentials
 from pyspark.sql import SparkSession
-
+import pyspark.sql.functions as F
+import pyspark.sql.types as T
+from pyspark.sql.window import Window
 
 
 spark = SparkSession.builder.getOrCreate()
@@ -21,6 +23,20 @@ def rparquet(path):
     """
     return spark.read.parquet(path)
 
+
+def cal_lift_table(df,col_score = "credit_scre", col_label = "label_value", n_bin = 10, ):
+    """
+    short funtion for read parquet
+    :param path:
+    :return:
+    """
+    df.groupBy(F.ntile(n_bin).over(Window.orderBy(F.desc(col_score))).alias("bin"))\
+        .agg(F.count("*").alias("count"),
+             F.min(col_score).alias(f"min_{col_score}"),
+             F.max(col_score).alias(f"max_{col_score}"),
+             F.bround(F.avg(col_label)*100.0, 2).alias(f"{col_label}_rate"))\
+        .orderBy("bin").show(n_bin)
+    return
 
 def _wsql(df, host, port, db, username, password, dbtable_new, mode = "append",  n_partition =None):
     """
