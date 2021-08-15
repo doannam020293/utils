@@ -3,6 +3,7 @@ from __future__ import print_function
 from datetime import datetime as dt
 from datetime import timedelta, date
 from pyspark.sql import functions as F
+from pyspark.sql import types as T
 from dateutil.relativedelta import relativedelta
 
 
@@ -40,6 +41,10 @@ def get_sunday_process(curdate):
         diff = wod + 1
     return curdate - timedelta(diff)
 
+
+get_sunday_process_udf = F.udf(get_sunday_process, T.DateType())
+
+
 def get_this_sunday(cur_date):
     """
     Return the date of Sunday in the week of input date
@@ -52,6 +57,7 @@ def get_this_sunday(cur_date):
     """
     cur_date = dt.strptime(cur_date, "%Y-%m-%d") if type(cur_date) is str else cur_date
     return cur_date - timedelta(cur_date.weekday() - 6)
+
 from pyspark.sql import functions as F
 def udf_get_sunday(date):
     return F.date_sub(F.next_day(date, "sunday"), 7)
